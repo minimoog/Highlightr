@@ -58,7 +58,22 @@ open class CodeAttributedString : NSTextStorage
         super.init(coder: aDecoder)
         setupListeners()
     }
-    
+
+	/// Initialize the CodeAttributedString
+	required public init(itemProviderData data: Data, typeIdentifier: String) throws
+	{
+		try super.init(itemProviderData: data, typeIdentifier: typeIdentifier)
+		setupListeners()
+	}
+
+	/// Initialize the CodeAttributedString
+	public override init(attributedString attrStr: NSAttributedString)
+	{
+		super.init()
+		stringStorage.append(attrStr)
+		setupListeners()
+	}
+
     #if os(OSX)
     /// Initialize the CodeAttributedString
     required public init?(pasteboardPropertyList propertyList: Any, ofType type: String)
@@ -94,7 +109,7 @@ open class CodeAttributedString : NSTextStorage
      
      - returns: Attributes
      */
-    open override func attributes(at location: Int, effectiveRange range: NSRangePointer?) -> [String : Any]
+    open override func attributes(at location: Int, effectiveRange range: NSRangePointer?) -> [NSAttributedStringKey : Any]
     {
         return stringStorage.attributes(at: location, effectiveRange: range)
     }
@@ -117,7 +132,7 @@ open class CodeAttributedString : NSTextStorage
      - parameter attrs: [String : AnyObject]
      - parameter range: NSRange
      */
-    open override func setAttributes(_ attrs: [String : Any]?, range: NSRange)
+    open override func setAttributes(_ attrs: [NSAttributedStringKey : Any]?, range: NSRange)
     {
         stringStorage.setAttributes(attrs, range: range)
         self.edited(NSTextStorageEditActions.editedAttributes, range: range, changeInLength: 0)
