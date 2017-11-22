@@ -91,12 +91,12 @@ open class Theme {
         codeFont = font
         
         #if os(iOS) || os(tvOS)
-        let boldDescriptor = UIFontDescriptor(fontAttributes: [UIFontDescriptorFamilyAttribute:font.familyName,
-                                                                UIFontDescriptorFaceAttribute:"Bold"])
-        let italicDescriptor = UIFontDescriptor(fontAttributes: [UIFontDescriptorFamilyAttribute:font.familyName,
-                                                                 UIFontDescriptorFaceAttribute:"Italic"])
-        let obliqueDescriptor = UIFontDescriptor(fontAttributes: [UIFontDescriptorFamilyAttribute:font.familyName,
-                                                                  UIFontDescriptorFaceAttribute:"Oblique"])
+            let boldDescriptor = UIFontDescriptor(fontAttributes: [UIFontDescriptor.AttributeName.family:font.familyName,
+                                                                   UIFontDescriptor.AttributeName.face:"Bold"])
+            let italicDescriptor = UIFontDescriptor(fontAttributes: [UIFontDescriptor.AttributeName.family:font.familyName,
+                                                                     UIFontDescriptor.AttributeName.face:"Italic"])
+            let obliqueDescriptor = UIFontDescriptor(fontAttributes: [UIFontDescriptor.AttributeName.family:font.familyName,
+                                                                      UIFontDescriptor.AttributeName.face:"Oblique"])
         #else
         let boldDescriptor = NSFontDescriptor(fontAttributes: [NSFontFamilyAttribute:font.familyName!,
                                                                 NSFontFaceAttribute:"Bold"])
@@ -134,15 +134,15 @@ open class Theme {
         
         if styleList.count > 0
         {
-            var attrs = [String:AnyObject]()
-            attrs[NSFontAttributeName] = codeFont
+            var attrs = [NSAttributedStringKey:Any]()
+            attrs[NSAttributedStringKey.font] = codeFont
             for style in styleList
             {
                 if let themeStyle = themeDict[style]
                 {
                     for (attrName, attrValue) in themeStyle
                     {
-                        attrs.updateValue(attrValue, forKey: attrName)
+                        attrs.updateValue(attrValue, forKey: NSAttributedStringKey(rawValue: attrName))
                     }
                 }
             }
@@ -151,7 +151,7 @@ open class Theme {
         }
         else
         {
-            returnString = NSAttributedString(string: string, attributes:[NSFontAttributeName:codeFont] )
+            returnString = NSAttributedString(string: string, attributes:[NSAttributedStringKey.font:codeFont] )
         }
         
         return returnString
@@ -172,7 +172,7 @@ open class Theme {
             if(result.numberOfRanges == 3)
             {
                 var attributes = [String:String]()
-                let cssPairs = objcString.substring(with: result.rangeAt(2)).components(separatedBy: ";")
+                let cssPairs = objcString.substring(with: result.range(at: 2)).components(separatedBy: ";")
                 for pair in cssPairs {
                     let cssPropComp = pair.components(separatedBy: ":")
                     if(cssPropComp.count == 2)
@@ -183,7 +183,7 @@ open class Theme {
                 }
                 if attributes.count > 0
                 {
-                    resultDict[objcString.substring(with: result.rangeAt(1))] = attributes
+                    resultDict[objcString.substring(with: result.range(at: 1))] = attributes
                 }
                 
             }
@@ -282,15 +282,15 @@ open class Theme {
     {
         switch key {
         case "color":
-            return NSForegroundColorAttributeName
+            return NSAttributedStringKey.foregroundColor.rawValue
         case "font-weight":
-            return NSFontAttributeName
+            return NSAttributedStringKey.font.rawValue
         case "font-style":
-            return NSFontAttributeName
+            return NSAttributedStringKey.font.rawValue
         case "background-color":
-            return NSBackgroundColorAttributeName
+            return NSAttributedStringKey.backgroundColor.rawValue
         default:
-            return NSFontAttributeName
+            return NSAttributedStringKey.font.rawValue
         }
     }
     

@@ -9,6 +9,10 @@
 import Foundation
 import JavaScriptCore
 
+#if os(OSX)
+    import AppKit
+#endif
+
 /// Utility class for generating a highlighted NSAttributedString from a String.
 open class Highlightr
 {
@@ -120,16 +124,17 @@ open class Highlightr
         if(fastRender)
         {
             returnString = processHTMLString(string)!
-        }else
+        }
+        else
         {
              string = "<style>"+theme.lightTheme+"</style><pre><code class=\"hljs\">"+string+"</code></pre>"
-             let opt = [
-             NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
-             NSCharacterEncodingDocumentAttribute: String.Encoding.utf8
-             ] as [String : Any]
+            let opt: [NSAttributedString.DocumentReadingOptionKey : Any] = [
+                NSAttributedString.DocumentReadingOptionKey.documentType: NSAttributedString.DocumentType.html,
+                NSAttributedString.DocumentReadingOptionKey.characterEncoding: String.Encoding.utf8
+                ]
             
              let data = string.data(using: String.Encoding.utf8)!
-             returnString = try! NSMutableAttributedString(data:data,options:opt as [String:AnyObject],documentAttributes:nil)
+             returnString = try! NSMutableAttributedString(data:data,options:opt, documentAttributes:nil)
 
         }
         
